@@ -1,0 +1,116 @@
+<div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header animate-fade-in">
+        <div class="header-content">
+            <div class="title-group">
+                <span class="subtitle">Visión General</span>
+                <h1>Team Performance</h1>
+            </div>
+            <button class="btn-create" (click)="navigateToNewTask()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Nueva Tarea
+            </button>
+        </div>
+    </header>
+
+    <!-- KPI Summary Section -->
+    <section class="stats-grid animate-fade-in" style="animation-delay: 0.1s">
+        <div class="stat-card">
+            <div class="stat-icon tasks">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                </svg>
+            </div>
+            <div class="stat-data">
+                <span class="stat-value">{{ stats.totalOpenTasks }}</span>
+                <span class="stat-label">Tareas Abiertas</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon projects">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <div class="stat-data">
+                <span class="stat-value">{{ stats.activeProjects }}</span>
+                <span class="stat-label">Proyectos Activos</span>
+            </div>
+        </div>
+        <div class="stat-card" [class.warning]="stats.highRiskDevs > 0">
+            <div class="stat-icon risk">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                    </path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <div class="stat-data">
+                <span class="stat-value">{{ stats.highRiskDevs }}</span>
+                <span class="stat-label">Desarrolladores en Riesgo</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <div *ngIf="loading" class="loading-container">
+        <div class="loader"></div>
+        <p>Sincronizando datos...</p>
+    </div>
+
+    <div *ngIf="!loading" class="dashboard-grid animate-fade-in" style="animation-delay: 0.2s">
+        <!-- Project Health Section -->
+        <section class="grid-section full-width card">
+            <div class="section-header">
+                <div>
+                    <h2>Estado por Proyecto</h2>
+                    <p>Resumen de ejecución y balance de entregas</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <app-reusable-table [columns]="healthColumns" [data]="projectHealth"
+                    [highlightRow]="highlightProjectRow.bind(this)" [clickable]="true"
+                    (rowClick)="onProjectClick($event)">
+                </app-reusable-table>
+            </div>
+        </section>
+
+        <!-- Developer Workload Section -->
+        <section class="grid-section card">
+            <div class="section-header">
+                <div>
+                    <h2>Carga de Trabajo</h2>
+                    <p>Distribución de tareas y complejidad</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <app-reusable-table [columns]="workloadColumns" [data]="developerWorkload">
+                </app-reusable-table>
+            </div>
+        </section>
+
+        <!-- Developer Delay Risk Section -->
+        <section class="grid-section card">
+            <div class="section-header">
+                <div>
+                    <h2>Análisis de Riesgo</h2>
+                    <p>Predicciones de retraso basadas en historial</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <app-reusable-table [columns]="riskColumns" [data]="developerDelayRisk"
+                    [highlightRow]="highlightRiskRow.bind(this)">
+                </app-reusable-table>
+            </div>
+        </section>
+    </div>
+</div>

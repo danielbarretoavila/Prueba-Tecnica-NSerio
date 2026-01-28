@@ -1,0 +1,38 @@
+<div class="table-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th *ngFor="let column of columns" 
+            [class.sortable]="column.sortable"
+            (click)="onSort(column)">
+          {{ column.label }}
+          <span *ngIf="column.sortable && sortColumn === column.key" class="sort-icon">
+            {{ sortDirection === 'asc' ? '▲' : '▼' }}
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data" 
+          [class.highlighted]="shouldHighlight(row)"
+          [class.clickable]="clickable"
+          (click)="onRowClick(row)">
+        <td *ngFor="let column of columns">
+          <span *ngIf="column.type !== 'badge'" [class]="column.type || 'text'">
+            {{ getCellValue(row, column) }}
+          </span>
+          <span *ngIf="column.type === 'badge'" 
+                class="badge" 
+                [ngClass]="getBadgeClass(row, column)">
+            {{ getCellValue(row, column) }}
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="data.length === 0">
+        <td [attr.colspan]="columns.length" class="no-data">
+          No hay datos disponibles
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

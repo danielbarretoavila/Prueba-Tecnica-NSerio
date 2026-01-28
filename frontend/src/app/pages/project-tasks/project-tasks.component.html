@@ -1,0 +1,106 @@
+<div class="project-tasks-container animate-fade-in">
+    <header class="page-header">
+        <div class="header-content">
+            <div class="back-link" (click)="goBack()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Volver al Dashboard
+            </div>
+            <h1>Tareas del Proyecto</h1>
+        </div>
+        <button class="btn-create" (click)="navigateToNewTask()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nueva Tarea
+        </button>
+    </header>
+
+    <div class="filters-bar card">
+        <div class="filter-group">
+            <label>Estado</label>
+            <select [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+                <option value="">Todos los estados</option>
+                <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Desarrollador</label>
+            <select [(ngModel)]="selectedAssignee" (change)="onAssigneeChange()">
+                <option [ngValue]="undefined">Todos los desarrolladores</option>
+                <option *ngFor="let dev of developers" [value]="dev.developerId">{{ dev.fullName }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-container">
+        <div class="loader"></div>
+        <p>Cargando tareas...</p>
+    </div>
+
+    <div *ngIf="!loading" class="tasks-card card animate-fade-in">
+        <div class="table-wrapper">
+            <app-reusable-table [columns]="taskColumns" [data]="tasks" [clickable]="true"
+                (rowClick)="onTaskClick($event)">
+            </app-reusable-table>
+        </div>
+
+        <div class="pagination-footer" *ngIf="totalPages > 1">
+            <span class="pagination-info">Página {{ currentPage }} de {{ totalPages }} ({{ totalCount }} tareas)</span>
+            <div class="pagination-actions">
+                <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Anterior</button>
+                <button [disabled]="currentPage === totalPages"
+                    (click)="onPageChange(currentPage + 1)">Siguiente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Detail Modal (Placeholder) -->
+<div class="modal-overlay" *ngIf="showTaskDetail" (click)="closeTaskDetail()">
+    <div class="modal-content card" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h3>Detalle de Tarea</h3>
+            <button class="close-btn" (click)="closeTaskDetail()">&times;</button>
+        </header>
+        <div class="modal-body" *ngIf="selectedTask">
+            <div class="detail-grid">
+                <div class="detail-item full">
+                    <label>Título</label>
+                    <p class="title-text">{{ selectedTask.title }}</p>
+                </div>
+                <div class="detail-item full">
+                    <label>Descripción</label>
+                    <p>{{ selectedTask.description || 'Sin descripción' }}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Estado</label>
+                    <span class="badge" [ngClass]="'status-' + selectedTask.status.toLowerCase()">{{ selectedTask.status
+                        }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Prioridad</label>
+                    <span class="badge" [ngClass]="'priority-' + selectedTask.priority.toLowerCase()">{{
+                        selectedTask.priority }}</span>
+                </div>
+                <div class="detail-item">
+                    <label>Asignado a</label>
+                    <p>{{ selectedTask.assigneeName }}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Complejidad</label>
+                    <p>{{ selectedTask.estimatedComplexity }}</p>
+                </div>
+                <div class="detail-item">
+                    <label>Vencimiento</label>
+                    <p>{{ selectedTask.dueDate | date }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

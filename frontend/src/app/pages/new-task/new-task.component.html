@@ -1,0 +1,107 @@
+<div class="new-task-container">
+    <div class="form-card">
+        <h2>Nueva Tarea</h2>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+
+            <div class="form-group">
+                <label for="projectId">Proyecto *</label>
+                <select id="projectId" formControlName="projectId" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f['projectId'].errors }">
+                    <option value="">Seleccione un proyecto</option>
+                    <option *ngFor="let project of projects" [value]="project.projectId">
+                        {{ project.name }}
+                    </option>
+                </select>
+                <div *ngIf="submitted && f['projectId'].errors" class="invalid-feedback">
+                    <div *ngIf="f['projectId'].errors['required']">El proyecto es requerido</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Título *</label>
+                <input type="text" id="title" formControlName="title" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && f['title'].errors }" placeholder="Título de la tarea">
+                <div *ngIf="submitted && f['title'].errors" class="invalid-feedback">
+                    <div *ngIf="f['title'].errors['required']">El título es requerido</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" formControlName="description" class="form-control" rows="3"
+                    placeholder="Descripción detallada (opcional)"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="assigneeId">Asignado a *</label>
+                        <select id="assigneeId" formControlName="assigneeId" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && f['assigneeId'].errors }">
+                            <option value="">Seleccione un desarrollador</option>
+                            <option *ngFor="let dev of developers" [value]="dev.developerId">
+                                {{ dev.fullName }}
+                            </option>
+                        </select>
+                        <div *ngIf="submitted && f['assigneeId'].errors" class="invalid-feedback">
+                            <div *ngIf="f['assigneeId'].errors['required']">El responsable es requerido</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="dueDate">Fecha de Vencimiento *</label>
+                        <input type="date" id="dueDate" formControlName="dueDate" class="form-control"
+                            [ngClass]="{ 'is-invalid': submitted && f['dueDate'].errors }">
+                        <div *ngIf="submitted && f['dueDate'].errors" class="invalid-feedback">
+                            <div *ngIf="f['dueDate'].errors['required']">La fecha es requerida</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="status">Estado *</label>
+                        <select id="status" formControlName="status" class="form-control">
+                            <option *ngFor="let status of STATUSES" [value]="status">{{ status }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="priority">Prioridad *</label>
+                        <select id="priority" formControlName="priority" class="form-control">
+                            <option *ngFor="let priority of PRIORITIES" [value]="priority">{{ priority }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="complexity">Complejidad (1-5) *</label>
+                        <input type="number" id="complexity" formControlName="estimatedComplexity" class="form-control"
+                            min="1" max="5" [ngClass]="{ 'is-invalid': submitted && f['estimatedComplexity'].errors }">
+                        <div *ngIf="submitted && f['estimatedComplexity'].errors" class="invalid-feedback">
+                            <div *ngIf="f['estimatedComplexity'].errors['required']">Requerido</div>
+                            <div *ngIf="f['estimatedComplexity'].errors['min']">Mínimo 1</div>
+                            <div *ngIf="f['estimatedComplexity'].errors['max']">Máximo 5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn-primary" [disabled]="loading">
+                    {{ loading ? 'Guardando...' : 'Crear Tarea' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
